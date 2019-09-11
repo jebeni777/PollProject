@@ -1,8 +1,8 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import CatPage from "../components/CatPage"
+import LanguagePage from "../components/LanguagePage"
 
 ReactDOM.render(
-    <CatPage />,
+    <LanguagePage />,
     document.getElementById("example")
 );

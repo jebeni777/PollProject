@@ -1,6 +1,6 @@
 import * as React from "react";
 
-export default class CatForm extends React.Component {
+export default class LanguageForm extends React.Component {
     constructor(props) {
         super(props);
 

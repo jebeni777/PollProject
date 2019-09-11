@@ -1,15 +1,15 @@
 module.exports = (entity) => {
-    const cats = entity.table;
+    const languages = entity.table;
 
     return {
-        index: async function(ctx, next) {
+        index: async function (ctx, next) {
             await next;
-            let result = await cats.getAll();
+            let result = await languages.getAll();
             ctx.body = result;
         },
-        show: async function(ctx, next){
+        show: async function (ctx, next) {
             await next;
-            let result = await cats.get(ctx.params.cat);
+            let result = await languages.get(ctx.params.language);
 
             if (!result) {
                 ctx.status = 404;
@@ -18,11 +18,11 @@ module.exports = (entity) => {
                 ctx.body = result;
             }
         },
-        create: async function(ctx, next) {
+        create: async function (ctx, next) {
             await next;
             if (!ctx.request.body || !ctx.request.body.name) ctx.throw(400, '.name required');
-            let cat = (({name, owner, age}) => ({name, owner, age}))(ctx.request.body);
-            await cats.create(cat);
+            let language = (({ name, count }) => ({ name, count }))(ctx.request.body);
+            await languages.create(language);
             ctx.status = 201;
             ctx.body = 'added!';
         }
@@ -36,15 +36,15 @@ module.exports = (entity) => {
          * }
          */
 
-            /**
-         *
-         * UPDATE a cat
-         *
-         * update = async function(next) {
-         *   //implement me!
-         * }
-         */
-   }
+        /**
+     *
+     * UPDATE a cat
+     *
+     * update = async function(next) {
+     *   //implement me!
+     * }
+     */
+    }
 }
 
 module.exports.permissions = {

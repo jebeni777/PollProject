@@ -5,14 +5,14 @@ const key = "name";
 exports.key = key;
 
 exports.schema = {
-    TableName : "Cats",
+    TableName: "Languages",
     BillingMode: "PROVISIONED",
     KeySchema: [
-        { AttributeName: key, KeyType: "HASH"}
+        { AttributeName: key, KeyType: "HASH" }
     ],
     AttributeDefinitions: [
-            { AttributeName: key, AttributeType: "S" }
-        ],
+        { AttributeName: key, AttributeType: "S" }
+    ],
     ProvisionedThroughput: {
         ReadCapacityUnits: 5,
         WriteCapacityUnits: 5
@@ -21,15 +21,18 @@ exports.schema = {
 
 exports.initialData = [
     {
-        name: "Jasper",
-        owner: "Kitty Kally",
-        age: 1
+        name: "Java",
+        count: 0
     },
     {
-        name: "Daisy",
-        owner: "Katherine Mao",
-        age: 8
+        name: "HTML",
+        count: 0
+    },
+    {
+        name: "Javascript",
+        count: 0
     }
+
 ];
 
 exports.table = new Table(this);
