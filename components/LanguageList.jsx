@@ -4,6 +4,12 @@ import LanguageItem from "./LanguageItem";
 export default (props) =>
     (
         <ul>
-            {props.languages.map((currLang, i) => <LanguageItem name={currLang.name} key={i} onAdd={props.onAdd} count={currLang.count} />)}
+            {props.languages.map((currLang, i) =>
+                <LanguageItem name={currLang.name} key={i}
+                    onIncrement={props.onIncrement}
+                    onDecrament={props.onDecrament}
+                    count={currLang.count}
+                    onDeleteLang={props.onDeleteLang} />)
+            }
         </ul>
     )
