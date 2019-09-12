@@ -6,7 +6,7 @@ import LanguageForm from "./LanguageForm"
 export default class LanguagePage extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { adding: false, newLang: {} }
+        this.state = { adding: false, newLang: [] }
         this.props = props;
         this.onChange = this.onChange.bind(this);
         this.onAdd = this.onAdd.bind(this);
@@ -14,12 +14,10 @@ export default class LanguagePage extends React.Component {
         this.onSave = this.onSave.bind(this);
     }
 
-    onAdd(e) {
-        e.preventDefault();
-
+    onAdd(language, count) {
+        axios.put(`/api/languages/${language}`, { language, count: count++ });
         this.setState({ adding: true });
     }
-
     onChange(target) {
         var newLang = { ...this.state.newLang };
         newLang[target.name] = target.value;
