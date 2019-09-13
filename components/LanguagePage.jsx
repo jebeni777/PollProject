@@ -69,6 +69,17 @@ export default class LanguagePage extends React.Component {
         document.getElementById(id).value = "";
     }
 
+    onSort(target) {
+        return target.sort((a, b) => {
+            let nameA = a.name.toUpperCase();
+            let nameB = b.name.toUpperCase();
+            if (nameA < nameB) { return -1; }
+            if (nameA > nameB) { return 1; }
+            return 0;
+        })
+    }
+
+
     onCancel() {
         this.setState({
             newLang: getNewLang()
@@ -81,14 +92,8 @@ export default class LanguagePage extends React.Component {
 
     async load() {
         var response = await axios.get("/api/languages");
-        var langData = response.data;
-        console.log(langData);
         this.setState({
-            sortedLangs: langData.sort((a, b) => {
-                if (a.name < b.name) { return -1; }
-                if (a.name > b.name) { return 1; }
-                return 0;
-            })
+            sortedLangs: this.onSort(response.data)
         });
         console.log(this.state.sortedLangs);
     }
