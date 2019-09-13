@@ -11,7 +11,6 @@ export default class LanguagePage extends React.Component {
         this.state = { languages: [], newLang: getNewLang(), sortedLangs: [] };
         this.props = props;
         this.onSearch = this.onSearch.bind(this);
-        this.executeSearch = this.executeSearch.bind(this);
         this.onChange = this.onChange.bind(this);
         this.onIncrement = this.onIncrement.bind(this);
         this.onDecrament = this.onDecrament.bind(this);
@@ -41,11 +40,6 @@ export default class LanguagePage extends React.Component {
         this.setState({ newSearch: newSearch });
     }
 
-    executeSearch() {
-        axios.get("/api/languages/", this.state.newSearch)
-            .then(() => this.load())
-
-    }
 
     onChange(target) {
         var newLang = { ...this.state.newLang };
