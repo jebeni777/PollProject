@@ -40,14 +40,6 @@ export default class LanguagePage extends React.Component {
         this.setState({ newSearch: newSearch });
     }
 
-    // clearInput = () => {
-    //     document.getElementById("myForm").reset();
-    //     this.setState({
-    //       item: ""
-    //     })
-    //   }
-
-
     onChange(target) {
         var newLang = { ...this.state.newLang };
         newLang[target.name] = target.value;
@@ -77,6 +69,11 @@ export default class LanguagePage extends React.Component {
             if (nameA > nameB) { return 1; }
             return 0;
         })
+    }
+
+    onFilter(target) {
+        return
+
     }
 
 
