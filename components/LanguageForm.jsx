@@ -32,7 +32,7 @@ export default class LanguageForm extends React.Component {
         return (
             <form onSubmit={this.onSubmit} onReset={this.onReset}>
                 <div>
-                    <input type="text" name="name"
+                    <input id="add" type="text" name="name"
                         placeholder="add Technology"
                         value={this.props.name}
                         onChange={this.onChange} />
@@ -40,7 +40,7 @@ export default class LanguageForm extends React.Component {
                     <input type="reset" value="Cancel" />
                 </div>
                 <div>
-                    <input type="search" name="name"
+                    <input id="search" type="search" name="name"
                         placeholder="find Technology"
                         value={this.props.name}
                         onChange={this.onSearch} />

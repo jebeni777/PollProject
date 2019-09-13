@@ -40,6 +40,13 @@ export default class LanguagePage extends React.Component {
         this.setState({ newSearch: newSearch });
     }
 
+    // clearInput = () => {
+    //     document.getElementById("myForm").reset();
+    //     this.setState({
+    //       item: ""
+    //     })
+    //   }
+
 
     onChange(target) {
         var newLang = { ...this.state.newLang };
@@ -51,10 +58,15 @@ export default class LanguagePage extends React.Component {
         axios.post("/api/languages/", this.state.newLang)
             .then(() => this.load())
             .then(
-                this.setState({ newLang: getNewLang() })
-            ).catch(
+                this.setState({ newLang: getNewLang() }))
+            .then(this.clearBox("add"))
+            .catch(
                 // todo err throw
-            );
+            )
+    }
+
+    clearBox(id) {
+        document.getElementById(id).value = "";
     }
 
     onCancel() {
