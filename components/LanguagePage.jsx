@@ -44,74 +44,68 @@ export default class LanguagePage extends React.Component {
     executeSearch() {
         axios.get("/api/languages/", this.state.newSearch)
             .then(() => this.load())
-            .then(
-                this.setState({
-                    newSearch: getNewLang.find(name) => {
-                        if(name[i] === )
-                    }
-})
-            )
+
     }
 
-onChange(target) {
-    var newLang = { ...this.state.newLang };
-    newLang[target.name] = target.value;
-    this.setState({ newLang: newLang });
-}
+    onChange(target) {
+        var newLang = { ...this.state.newLang };
+        newLang[target.name] = target.value;
+        this.setState({ newLang: newLang });
+    }
 
-onSave() {
-    axios.post("/api/languages/", this.state.newLang)
-        .then(() => this.load())
-        .then(
-            this.setState({ newLang: getNewLang() })
-        ).catch(
-            // todo err throw
-        );
-}
+    onSave() {
+        axios.post("/api/languages/", this.state.newLang)
+            .then(() => this.load())
+            .then(
+                this.setState({ newLang: getNewLang() })
+            ).catch(
+                // todo err throw
+            );
+    }
 
-onCancel() {
-    this.setState({
-        newLang: getNewLang()
-    });
-}
+    onCancel() {
+        this.setState({
+            newLang: getNewLang()
+        });
+    }
 
-componentDidMount() {
-    this.load();
-}
+    componentDidMount() {
+        this.load();
+    }
 
-async load() {
-    var response = await axios.get("/api/languages");
-    var langData = response.data;
-    console.log(langData);
-    this.setState({
-        sortedLangs: langData.sort((a, b) => {
-            if (a.name < b.name) { return -1; }
-            if (a.name > b.name) { return 1; }
-            return 0;
-        })
-    });
-    console.log(this.state.sortedLangs);
-}
+    async load() {
+        var response = await axios.get("/api/languages");
+        var langData = response.data;
+        console.log(langData);
+        this.setState({
+            sortedLangs: langData.sort((a, b) => {
+                if (a.name < b.name) { return -1; }
+                if (a.name > b.name) { return 1; }
+                return 0;
+            })
+        });
+        console.log(this.state.sortedLangs);
+    }
 
-render() {
-    return (
-        <div>
+    render() {
+        return (
+            <div>
 
-            <LanguageForm languages={this.state.newLang.name}
-                onChange={this.onChange}
-                onSave={this.onSave}
-                onReset={this.onCancel} />
+                <LanguageForm languages={this.state.newLang.name}
+                    onChange={this.onChange}
+                    onSave={this.onSave}
+                    onReset={this.onCancel} />
 
-            {this.state.sortedLangs && this.state.sortedLangs.length &&
-                <LanguageList languages={this.state.sortedLangs}
-                    onIncrement={this.onIncrement}
-                    onDecrament={this.onDecrament}
-                    onDeleteLang={this.onDeleteLang} />
-            }
-            {this.state.sortedLangs <= 0 &&
-                <h1>There are no items to display</h1>
-            }
-        </div>
-    )
-}
+                {this.state.sortedLangs && this.state.sortedLangs.length &&
+                    <LanguageList languages={this.state.sortedLangs}
+                        onIncrement={this.onIncrement}
+                        onDecrament={this.onDecrament}
+                        onDeleteLang={this.onDeleteLang} />
+                }
+                {this.state.sortedLangs <= 0 &&
+                    <h1>There are no items to display</h1>
+                }
+            </div>
+        )
+    }
 }
