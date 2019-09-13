@@ -3,7 +3,7 @@ import LanguageItem from "./LanguageItem";
 
 export default (props) =>
     (
-        <ul>
+        <table>
             {props.languages.map((currLang, i) =>
                 <LanguageItem name={currLang.name} key={i}
                     onIncrement={props.onIncrement}
@@ -11,5 +11,5 @@ export default (props) =>
                     count={currLang.count}
                     onDeleteLang={props.onDeleteLang} />)
             }
-        </ul>
+        </table>
     )

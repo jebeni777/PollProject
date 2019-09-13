@@ -8,8 +8,10 @@ const getNewLang = () => ({ name: "", count: 0 });
 export default class LanguagePage extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { languages: [], newLang: getNewLang() };
+        this.state = { languages: [], newLang: getNewLang(), sortedLangs: [] };
         this.props = props;
+        this.onSearch = this.onSearch.bind(this);
+        this.executeSearch = this.executeSearch.bind(this);
         this.onChange = this.onChange.bind(this);
         this.onIncrement = this.onIncrement.bind(this);
         this.onDecrament = this.onDecrament.bind(this);
@@ -33,56 +35,83 @@ export default class LanguagePage extends React.Component {
             .then(() => this.load());
     }
 
-    onChange(target) {
-        var newLang = { ...this.state.newLang };
-        newLang[target.name] = target.value;
-        this.setState({ newLang: newLang });
+    onSearch(target) {
+        var newSearch = { ...this.state.newSearch };
+        newSearch[target.name] = target.value;
+        this.setState({ newSearch: newSearch });
     }
 
-    onSave() {
-        axios.post("/api/languages/", this.state.newLang)
+    executeSearch() {
+        axios.get("/api/languages/", this.state.newSearch)
             .then(() => this.load())
             .then(
-                this.setState({ newLang: getNewLang() })
-            ).catch(
-                //todo: set an error condition
+                this.setState({
+                    newSearch: getNewLang.find(name) => {
+                        if(name[i] === )
+                    }
+})
             )
     }
 
-    onCancel() {
-        this.setState({
-            newLang: getNewLang()
-        });
-    }
+onChange(target) {
+    var newLang = { ...this.state.newLang };
+    newLang[target.name] = target.value;
+    this.setState({ newLang: newLang });
+}
 
-    componentDidMount() {
-        this.load();
-    }
+onSave() {
+    axios.post("/api/languages/", this.state.newLang)
+        .then(() => this.load())
+        .then(
+            this.setState({ newLang: getNewLang() })
+        ).catch(
+            // todo err throw
+        );
+}
 
-    async load() {
-        var response = await axios.get("/api/languages");
-        this.setState({ languages: response.data });
-    }
+onCancel() {
+    this.setState({
+        newLang: getNewLang()
+    });
+}
 
-    render() {
-        return (
-            <div>
+componentDidMount() {
+    this.load();
+}
 
-                <LanguageForm languages={this.state.newLang.language}
-                    onChange={this.onChange}
-                    onSave={this.onSave}
-                    onReset={this.onCancel} />
+async load() {
+    var response = await axios.get("/api/languages");
+    var langData = response.data;
+    console.log(langData);
+    this.setState({
+        sortedLangs: langData.sort((a, b) => {
+            if (a.name < b.name) { return -1; }
+            if (a.name > b.name) { return 1; }
+            return 0;
+        })
+    });
+    console.log(this.state.sortedLangs);
+}
 
-                {this.state.languages && this.state.languages.length &&
-                    <LanguageList languages={this.state.languages}
-                        onIncrement={this.onIncrement}
-                        onDecrament={this.onDecrament}
-                        onDeleteLang={this.onDeleteLang} />
-                }
-                {this.state.languages <= 0 &&
-                    <h1>There are no items to display</h1>
-                }
-            </div>
-        )
-    }
+render() {
+    return (
+        <div>
+
+            <LanguageForm languages={this.state.newLang.name}
+                onChange={this.onChange}
+                onSave={this.onSave}
+                onReset={this.onCancel} />
+
+            {this.state.sortedLangs && this.state.sortedLangs.length &&
+                <LanguageList languages={this.state.sortedLangs}
+                    onIncrement={this.onIncrement}
+                    onDecrament={this.onDecrament}
+                    onDeleteLang={this.onDeleteLang} />
+            }
+            {this.state.sortedLangs <= 0 &&
+                <h1>There are no items to display</h1>
+            }
+        </div>
+    )
+}
 }

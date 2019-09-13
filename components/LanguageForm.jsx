@@ -31,10 +31,22 @@ export default class LanguageForm extends React.Component {
     render() {
         return (
             <form onSubmit={this.onSubmit} onReset={this.onReset}>
-                <input type="text" name="name" placeholder="add Technology" value={this.props.name} onChange={this.onChange} />
-                <input type="submit" value="Submit" />
-                <input type="reset" value="Cancel" />
-            </form>
+                <div>
+                    <input type="text" name="name"
+                        placeholder="add Technology"
+                        value={this.props.name}
+                        onChange={this.onChange} />
+                    <input type="submit" value="Submit" />
+                    <input type="reset" value="Cancel" />
+                </div>
+                <div>
+                    <input type="search" name="name"
+                        placeholder="find Technology"
+                        value={this.props.name}
+                        onChange={this.onSearch} />
+                    <button onClick={this.executeSearch}>Search</button>
+                </div>
+            </form >
         )
     }
 }
