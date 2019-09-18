@@ -5,7 +5,7 @@ import LanguageList from "./LanguageList";
 import LanguageForm from "./LanguageForm";
 import LanguageReport from "./LanguageReport";
 
-export default (props) => {
+export default () => {
     const [name, setName] = useState('');
     const [languages, setLanguages] = useState([]);
     const [report, setReport] = useState(false);
@@ -13,14 +13,24 @@ export default (props) => {
     const [showForm, setShowForm] = useState(true);
     const [showTable, setTable] = useState(true);
 
-    const showReport = () => {
+    const showReport = (e) => {
+        e.preventDefault();
         axios.get("/api/languages")
-            .then((response) => setCountSort(response.data.sort((a, b) => b.count - a.count)));
+            .then((response) => {
+                const [...data] = response.data;
+                data.sort((a, b) => b.count - a.count);
+                setCountSort(data);
+            });
         setReport(true);
         setShowForm(false);
         setTable(false);
     }
 
+    const closeReport = () => {
+        setReport(false);
+        setShowForm(true);
+        setTable(true);
+    }
     const filter = (language) =>
         language.name.toUpperCase().startsWith(name.toUpperCase());
 
@@ -111,7 +121,8 @@ export default (props) => {
                 <h1>There are no items to display</h1>
             }
             {report &&
-                <LanguageReport languages={countSort} />
+                <LanguageReport languages={countSort}
+                    closeReport={closeReport} />
             }
         </div>
     )
