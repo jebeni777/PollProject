@@ -1,119 +1,100 @@
 import * as React from "react";
+import { useState, useEffect, useMemo } from "react";
 import * as axios from "axios";
-import LanguageList from "./LanguageList"
-import LanguageForm from "./LanguageForm"
+import LanguageList from "./LanguageList";
+import LanguageForm from "./LanguageForm";
+import LanguageReport from "./LanguageReport";
 
-const getNewLang = () => ({ name: "", count: 0 });
+export default (props) => {
+    const [name, setName] = useState('');
+    const [languages, setLanguages] = useState([]);
+    const [report, setReport] = useState(false);
+    const [countSort, setCountSort] = useState([]);
+    const [showForm, setShowForm] = useState(true);
+    const [showTable, setTable] = useState(true);
 
-export default class LanguagePage extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = { languages: [], newLang: getNewLang(), sortedLangs: [] };
-        this.props = props;
-        this.onSearch = this.onSearch.bind(this);
-        this.onChange = this.onChange.bind(this);
-        this.onIncrement = this.onIncrement.bind(this);
-        this.onDecrament = this.onDecrament.bind(this);
-        this.onDeleteLang = this.onDeleteLang.bind(this);
-        this.onCancel = this.onCancel.bind(this);
-        this.onSave = this.onSave.bind(this);
+    const showReport = () => {
+        axios.get("/api/languages")
+            .then((response) => setCountSort(response.data.sort((a, b) => b.count - a.count)));
+        setReport(true);
+        setShowForm(false);
+        setTable(false);
     }
 
-    onIncrement(language, count) {
-        axios.put(`/api/languages/${language}`, { language, count: count + 1 })
-            .then(() => this.load());
+    const filter = (language) =>
+        language.name.toUpperCase().startsWith(name.toUpperCase());
+
+
+    const compare = (a, b) => {
+        let nameA = a.name.toUpperCase();
+        let nameB = b.name.toUpperCase();
+        if (nameA < nameB) { return -1; }
+        if (nameA > nameB) { return 1; }
+        return 0;
     }
 
-    onDecrament(language, count) {
-        axios.put(`/api/languages/${language}`, { language, count: count - 1 })
-            .then(() => this.load());
+    const load = () =>
+        axios.get("/api/languages")
+            .then((response) => setLanguages(response.data));
+
+    useEffect(() => {
+        load();
+    }, [true]);
+
+    const onSave = () => {
+        axios.post("/api/languages/", { name, count: 0 })
+            .then(() => load())
+            .then(() => setName(''));
     }
 
-    onDeleteLang(language) {
-        axios.delete(`/api/languages/${language}`)
-            .then(() => this.load());
+    const onUpdate = (language) => {
+        axios.put(`/api/languages/${language.name}`, language)
+            .then(() => load());
     }
 
-    onSearch(target) {
-        var newSearch = { ...this.state.newSearch };
-        newSearch[target.name] = target.value;
-        this.setState({ newSearch: newSearch });
+    const onDelete = (name) => {
+        axios.delete(`/api/languages/${name}`)
+            .then(() => load());
     }
 
-    onChange(target) {
-        var newLang = { ...this.state.newLang };
-        newLang[target.name] = target.value;
-        this.setState({ newLang: newLang });
+    const alertDel = (name, count) => {
+        if (count > 0 && confirm(`The technology you're deleting has data! Do you want to delete?`)) {
+            onDelete(name);
+        } else {
+            onDelete(name);
+        }
     }
 
-    onSave() {
-        axios.post("/api/languages/", this.state.newLang)
-            .then(() => this.load())
-            .then(
-                this.setState({ newLang: getNewLang() }))
-            .then(this.clearBox("add"))
-            .catch(
-                // todo err throw
-            )
-    }
+    const view = useMemo(() => languages && languages
+        .filter(filter)
+        .sort(compare),
+        [languages, name]);
 
-    clearBox(id) {
-        document.getElementById(id).value = "";
-    }
-
-    onSort(target) {
-        return target.sort((a, b) => {
-            let nameA = a.name.toUpperCase();
-            let nameB = b.name.toUpperCase();
-            if (nameA < nameB) { return -1; }
-            if (nameA > nameB) { return 1; }
-            return 0;
-        })
-    }
-
-    onFilter(target) {
-        return
-
-    }
-
-
-    onCancel() {
-        this.setState({
-            newLang: getNewLang()
-        });
-    }
-
-    componentDidMount() {
-        this.load();
-    }
-
-    async load() {
-        var response = await axios.get("/api/languages");
-        this.setState({
-            sortedLangs: this.onSort(response.data)
-        });
-        console.log(this.state.sortedLangs);
-    }
-
-    render() {
-        return (
-            <div>
-
-                <LanguageForm languages={this.state.newLang.name}
-                    onChange={this.onChange}
-                    onSave={this.onSave}
-                    onReset={this.onCancel} />
-
-                {this.state.sortedLangs && this.state.sortedLangs.length &&
-                    <LanguageList languages={this.state.sortedLangs}
-                        onIncrement={this.onIncrement}
-                        onDecrament={this.onDecrament}
-                        onDeleteLang={this.onDeleteLang} />
-                }
-                {this.state.sortedLangs <= 0 &&
-                    <h1>There are no items to display</h1>
-                }
-            </div>
-        )
-    }
+    return (
+        <div>
+            {showForm &&
+                <LanguageForm
+                    name={name}
+                    onChange={(target) => setName(target.value)}
+                    onSave={onSave}
+                    showForm={showForm}
+                    showReport={showReport}
+                    onReset={() => setName('')} />
+            }
+            {view && view.length && showTable &&
+                <LanguageList languages={view}
+                    showTable={showTable}
+                    onIncrement={(name, count) => onUpdate({ name, count: ++count })}
+                    onDecrament={(name, count) => onUpdate({ name, count: count && --count })}
+                    onDeleteLang={alertDel} />
+            }
+            {view <= 0 &&
+                <h1>There are no items to display</h1>
+            }
+            {report &&
+                <LanguageReport languages={countSort} />
+            }
+        </div>
+    )
 }
+

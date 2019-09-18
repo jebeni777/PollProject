@@ -7,9 +7,10 @@ module.exports = (entity) => {
             let result = await languages.getAll();
             ctx.body = result;
         },
+
         show: async function (ctx, next) {
             await next;
-            let result = await languages.get(ctx.params.language);
+            let result = await languages.get(ctx.params.language.toUpperCase());
 
             if (!result) {
                 ctx.status = 404;
@@ -18,10 +19,11 @@ module.exports = (entity) => {
                 ctx.body = result;
             }
         },
+
         create: async function (ctx, next) {
             await next;
             if (!ctx.request.body || !ctx.request.body.name) ctx.throw(400, '.name required');
-            let language = (({ name, count }) => ({ name, count }))(ctx.request.body);
+            let language = (({ name, count }) => ({ key: name.toUpperCase(), name, count }))(ctx.request.body);
             await languages.create(language);
             ctx.status = 201;
             ctx.body = 'added!';
@@ -32,7 +34,7 @@ module.exports = (entity) => {
             if (!ctx.params.language) {
                 ctx.throw(400, 'must supply a language');
             }
-            await languages.delete(ctx.params.language);
+            await languages.delete(ctx.params.language.toUpperCase());
             ctx.status = 204;
             ctx.body = '';
         },
@@ -40,13 +42,13 @@ module.exports = (entity) => {
         update: async function (ctx, next) {
             await next;
             if (!ctx.request.body ||
-                !ctx.request.body.language ||
+                !ctx.request.body.name ||
                 ctx.request.body.count === 'undefined' ||
                 ctx.request.body.count < 0) {
                 ctx.throw(400, '.name and .count required');
             }
-            let language = (({ name, count }) => ({ name, count }))(ctx.request.body);
-            await languages.update(language, ctx.params.language);
+            let language = (({ name, count }) => ({ key: name.toUpperCase(), name, count }))(ctx.request.body);
+            await languages.update(language, ctx.params.language.toUpperCase());
             ctx.status = 200;
             ctx.body = 'updated!';
         }
