@@ -24,6 +24,18 @@ export default (props) => {
     const filter = (language) =>
         language.name.toUpperCase().startsWith(name.toUpperCase());
 
+    const checkIfExists = (checkName) => {
+        let length = languages.length;
+        for (var i = 0; i < length; i++) {
+            if (languages[i].key === checkName.toUpperCase()) {
+                alert("Technology already exists in database!");
+                return true;
+            }
+
+        }
+        return false;
+    }
+
 
     const compare = (a, b) => {
         let nameA = a.name.toUpperCase();
@@ -42,9 +54,16 @@ export default (props) => {
     }, [true]);
 
     const onSave = () => {
-        axios.post("/api/languages/", { name, count: 0 })
-            .then(() => load())
-            .then(() => setName(''));
+        let checkName = name;
+        if (!checkIfExists(checkName)) {
+            axios.post("/api/languages/", { name, count: 0 })
+                .then(() => load())
+                .then(() => setName(''))
+        } else {
+            setName('');
+            () => load();
+        }
+
     }
 
     const onUpdate = (language) => {
