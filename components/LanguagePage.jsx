@@ -31,6 +31,7 @@ export default () => {
         setShowForm(true);
         setTable(true);
     }
+
     const filter = (language) =>
         language.name.toUpperCase().startsWith(name.toUpperCase());
 

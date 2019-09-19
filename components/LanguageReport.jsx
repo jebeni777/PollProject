@@ -4,10 +4,10 @@ export default (props) =>
     (
         <div>
             <table>
-                <tbody className='report'>
+                <tbody>
                     {props.languages.map((currLang, i) =>
-                        <tr key={i} className='report'>
-                            <td className='report'>{currLang.name}</td><td className='report'>{currLang.count}</td>
+                        <tr key={i}>
+                            <td>{currLang.name}</td><td>{currLang.count}</td>
                         </tr>
                     )}
                 </tbody>
